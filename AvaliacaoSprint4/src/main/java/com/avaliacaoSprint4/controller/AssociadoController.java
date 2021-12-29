@@ -32,6 +32,7 @@ public class AssociadoController {
     private AssociadoService service;
 
 
+    //Cadastra Associados
     @PostMapping
     @Transactional
     @CacheEvict(value = "listaDeAssociados", allEntries = true)
@@ -41,6 +42,7 @@ public class AssociadoController {
         
     }
 
+    //Vincula um associado a um partido
     @PostMapping("/partidos")
     @Transactional
     @CacheEvict(value = "listaDeAssociados", allEntries = true)
@@ -49,17 +51,22 @@ public class AssociadoController {
 
     }
 
+
+    //Lista todos os associados a partir de seu cargo politico ou ordena pelo nome se 'ordenarPorNome=true' e lista normalmente se 'ordenarPorNome=false'
     @GetMapping
     @Cacheable(value = "listaDeAssociados")
     public ResponseEntity<List<AssociadoDTO>> getAssociados(@RequestParam(required = false, name = "cargoPolitico") String cargo, @RequestParam(required = false, name = "ordenarPorNome") Boolean OrdNome){
         return  this.service.getAssociados(cargo, OrdNome);
     }
 
+    //Lista um associado
     @GetMapping("/{id}")
     public ResponseEntity<AssociadoDTO> listAssociado(@PathVariable Long id){
         return this.service.listAssociado(id);
     }
 
+
+    //atualiza um associado
     @PutMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDeAssociados", allEntries = true)
@@ -67,6 +74,8 @@ public class AssociadoController {
         return this.service.updateAssociado(id, formDTO);
     }
 
+
+    //exclui um associado
     @DeleteMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDeAssociados", allEntries = true)
@@ -75,6 +84,8 @@ public class AssociadoController {
     }
 
 
+
+    //deleta um associado de um partido
     @DeleteMapping("/{id}/partidos/{id2}")
     @Transactional
     @CacheEvict(value = "listaDeAssociados", allEntries = true)

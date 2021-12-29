@@ -32,6 +32,8 @@ public class PartidoController {
     @Autowired
     private PartidoService service;
 
+
+    //Cadastra um partido
     @PostMapping
     @Transactional
     @CacheEvict(value = "listaDePartidos", allEntries = true)
@@ -40,24 +42,31 @@ public class PartidoController {
         return this.service.savePartido(form);
     }
 
+    //Lista partidos de acordo com determinada ideologia
     @GetMapping
     @Cacheable(value = "listaDePartidos")
     public ResponseEntity<List<PartidoDTO>> getPartidos(@RequestParam(required = false, name = "ideologia") String ideologia){
         return this.service.getPartidos(ideologia);
     }
 
+
+    //Lista um partido
     @GetMapping("/{id}")
     public ResponseEntity<PartidoDTO> listPartido(@PathVariable Long id){
         return this.service.listPartido(id);
     }
 
 
+
+    //Lista todos os associados daquele partido
     @GetMapping("/{id}/associados")
     public ResponseEntity<List<AssociadoDTO>> listAssociadosFromPartido(@PathVariable Long id){
        return this.service.listAssociadoFromPartido(id);
   
     }
 
+
+    //atualiza um associado
     @PutMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDePartidos", allEntries = true)
@@ -65,6 +74,8 @@ public class PartidoController {
         return this.service.updatePartido(id, form);
     }
 
+
+    //deleta um associado
     @DeleteMapping("/{id}")
     @Transactional
     @CacheEvict(value = "listaDePartidos", allEntries = true)

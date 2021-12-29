@@ -37,13 +37,18 @@ public class AssociadoServiceImpl implements AssociadoService{
     @Autowired
     private ModelMapper modelMapper;
 
+
+    
     @Override
     public ResponseEntity<AssociadoDTO> saveAssociado(AssociadoFormDTO formDTO) {  
         
         String cargoS = formDTO.getCargo().toUpperCase();
         String sexoS =formDTO.getSexo().toUpperCase();
+
         if((Arrays.stream(CargoPolitico.values()).anyMatch(t -> t.name().equals(cargoS)))){
+
             if((Arrays.stream(Sexo.values()).anyMatch(t -> t.name().equals(sexoS)))){
+                
                 CargoPolitico cargo = CargoPolitico.valueOf(cargoS);
                 Sexo sexo = Sexo.valueOf(sexoS);
                 Associado associado = modelMapper.map(formDTO, Associado.class);
@@ -51,10 +56,14 @@ public class AssociadoServiceImpl implements AssociadoService{
                 associado.setSexo(sexo);
                 Associado associadoSave = associadoRepository.save(associado);
                 return ResponseEntity.ok(modelMapper.map(associadoSave, AssociadoDTO.class));
+
             }else{
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
         }else{
+
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }   
     }
@@ -69,13 +78,17 @@ public class AssociadoServiceImpl implements AssociadoService{
                 String cargoFix = cargo.toUpperCase();
 
                 if((Arrays.stream(CargoPolitico.values()).anyMatch(t -> t.name().equals(cargoFix)))){
+
                     CargoPolitico cargoFiltrado = CargoPolitico.valueOf(cargoFix);
                     associados = associadoRepository.findByCargo(cargoFiltrado);
                     
                 }else{
+
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
+
             }else{
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
        
@@ -112,7 +125,7 @@ public class AssociadoServiceImpl implements AssociadoService{
             associadoRepository.save(associadoSave);
 
         }else{
-            
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
        
         return ResponseEntity.ok(modelMapper.map(associadoSave, AssociadoDTO.class));
@@ -135,11 +148,14 @@ public class AssociadoServiceImpl implements AssociadoService{
         Optional<Associado> opAssociado = associadoRepository.findById(id);
 
         if(opAssociado.isPresent()){
+
             String cargoS = form.getCargo().toUpperCase();
             String sexoS = form.getSexo().toUpperCase();
 
             if((Arrays.stream(CargoPolitico.values()).anyMatch(t -> t.name().equals(cargoS)))){
+
                 if((Arrays.stream(Sexo.values()).anyMatch(t -> t.name().equals(sexoS)))){
+
                     CargoPolitico cargo = CargoPolitico.valueOf(cargoS);
                     Sexo sexo = Sexo.valueOf(sexoS);
                     associado = associadoRepository.getById(id);
@@ -150,46 +166,59 @@ public class AssociadoServiceImpl implements AssociadoService{
                     associadoRepository.save(associado);
 
                 }else{
+
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
 
             }else{
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         }else{
+
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return ResponseEntity.ok(modelMapper.map(associado, AssociadoDTO.class));
     }
 
     @Override
     public ResponseEntity<?> deleteAssociado(Long id) {
+
         Optional<Associado> aOptional = associadoRepository.findById(id);
+        
         if(aOptional.isPresent()){
+
             associadoRepository.deleteById(id);
+
         }else{
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return ResponseEntity.ok().build();
         
     }
 
     @Override
     public ResponseEntity<?> deleteAssociadoFromPartido(Long idAssociado, Long idPartido) {
+
         Associado associado = null;
         Optional<Associado> aOptional = associadoRepository.findById(idAssociado);
         Optional<Partido> pOptional = partidoRepository.findById(idPartido);
 
         if(aOptional.isPresent() && pOptional.isPresent()){
+
             associado = associadoRepository.getById(idAssociado);
             associado.setPartido("");
             associadoRepository.save(associado);
+
         }else{
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        
         return ResponseEntity.ok().build();
     }
 }
